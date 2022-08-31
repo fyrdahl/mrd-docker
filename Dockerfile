@@ -38,7 +38,8 @@ RUN cd /opt/code && \
 
 # Clone from GitHub
 RUN cd /opt/code && \
-    git clone https://github.com/ismrmrd/ismrmrd-python-tools
+    git clone https://github.com/ismrmrd/ismrmrd-python-tools && \
+    git clone https://github.com/kspaceKelvin/python-ismrmrd-server
 
 FROM python:3.10-slim-bullseye
 ARG DEBIAN_FRONTEND=noninteractive
