@@ -59,7 +59,7 @@ RUN cd /usr/local/lib && \
     ldconfig
 
 RUN python3 -m pip install -U pip && \
-    python3 -m pip --no-cache-dir install pyxb h5py numpy scipy ismrmrd && \
+    python3 -m pip --no-cache-dir install pyxb h5py numpy scipy ismrmrd pillow pydicom pynetdicom && \
     python3 -m pip --no-cache-dir install /opt/code/ismrmrd-python-tools/
 
 WORKDIR /tmp
