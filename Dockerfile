@@ -1,4 +1,4 @@
-FROM python:3.10-slim-bullseye AS build
+FROM python:3.8-slim-bullseye AS build
 ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && \
@@ -41,7 +41,7 @@ RUN cd /opt/code && \
     git clone https://github.com/ismrmrd/ismrmrd-python-tools && \
     git clone https://github.com/kspaceKelvin/python-ismrmrd-server
 
-FROM python:3.10-slim-bullseye
+FROM python:3.8-slim-bullseye
 ARG DEBIAN_FRONTEND=noninteractive
 COPY --from=build /usr/local/bin/siemens_to_ismrmrd /usr/local/bin/
 COPY --from=build /usr/local/lib/libismrmrd.tar.gz /usr/local/lib/
@@ -61,5 +61,8 @@ RUN cd /usr/local/lib && \
 RUN python3 -m pip install -U pip && \
     python3 -m pip --no-cache-dir install pyxb h5py numpy scipy ismrmrd && \
     python3 -m pip --no-cache-dir install /opt/code/ismrmrd-python-tools/
+
+WORKDIR /tmp
+ADD extras.tar.gz .
 
 ENTRYPOINT ["/bin/bash"]
