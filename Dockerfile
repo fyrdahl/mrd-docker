@@ -1,4 +1,4 @@
-FROM python:3.8-slim-bullseye AS build
+FROM python:3.12-slim-bookworm AS build
 ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && \
@@ -7,14 +7,14 @@ RUN apt-get update && \
     libhdf5-serial-dev h5utils cmake libboost-all-dev \
     libboost-all-dev xsdcxx libxerces-c-dev \
     libhdf5-serial-dev h5utils hdf5-tools \
-    libtinyxml-dev libxml2-dev libxslt1-dev && \
+    libtinyxml-dev libxml2-dev libxslt1-dev libpugixml-dev && \
     rm -rf /var/lib/apt/lists/*
 
 RUN  mkdir -p /opt/code
 
 # ISMRMRD library
 RUN cd /opt/code && \
-    git clone https://github.com/ismrmrd/ismrmrd.git && \
+    git clone https://github.com/ismrmrd/ismrmrd.git -b v1.14.1 && \
     cd /opt/code/ismrmrd && \
     mkdir build && \
     cd build && \
@@ -41,7 +41,7 @@ RUN cd /opt/code && \
     git clone https://github.com/ismrmrd/ismrmrd-python-tools && \
     git clone https://github.com/kspaceKelvin/python-ismrmrd-server
 
-FROM python:3.8-slim-bullseye
+FROM python:3.12-slim-bookworm
 ARG DEBIAN_FRONTEND=noninteractive
 COPY --from=build /usr/local/bin/siemens_to_ismrmrd /usr/local/bin/
 COPY --from=build /usr/local/lib/libismrmrd.tar.gz /usr/local/lib/
@@ -50,7 +50,7 @@ COPY --from=build /opt/code /opt/code
 RUN apt-get update && \
     apt-get install --no-install-recommends --no-install-suggests -y \
     libboost-all-dev xsdcxx libxerces-c-dev libhdf5-serial-dev h5utils \
-    hdf5-tools libtinyxml-dev libxml2-dev libxslt1-dev && \
+    hdf5-tools libtinyxml-dev libxml2-dev libxslt1-dev libpugixml1v5 && \
     rm -rf /var/lib/apt/lists/*
 
 RUN cd /usr/local/lib && \
@@ -59,7 +59,7 @@ RUN cd /usr/local/lib && \
     ldconfig
 
 RUN python3 -m pip install -U pip && \
-    python3 -m pip --no-cache-dir install pyxb h5py numpy scipy ismrmrd pillow pydicom pynetdicom && \
+    python3 -m pip --no-cache-dir install pyxb-x h5py numpy scipy ismrmrd pillow pydicom pynetdicom && \
     python3 -m pip --no-cache-dir install /opt/code/ismrmrd-python-tools/
 
 WORKDIR /tmp
